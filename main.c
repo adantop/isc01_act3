@@ -32,10 +32,12 @@ int main(int argc, char *argv[argc]) {
 
 		gen_keys(p, q);
 		return EXIT_SUCCESS;
-	} else if (strcmp(argv[1], "encrypt") == 0) {
-		PrivateKey priv = read_private_key(argv[2]);
+	}
+
+	if (strcmp(argv[1], "encrypt") == 0) {
+		PublicKey pub = read_public_key(argv[2]);
 		int size = strlen(argv[3]);
-		int *c = encrypt(priv, argv[3], size);
+		int *c = encrypt(pub, argv[3], size);
 
 		// print the output
 		printf("[");
@@ -45,12 +47,14 @@ int main(int argc, char *argv[argc]) {
 		// Save the file
 		write_data("encrypted.bin", size, c);
 		return EXIT_SUCCESS;
-	} else if (strcmp(argv[1], "decrypt") == 0) {
-		PublicKey pub = read_public_key(argv[2]);
+	}
+
+	if (strcmp(argv[1], "decrypt") == 0) {
+		PrivateKey priv = read_private_key(argv[2]);
 		int size;
 		int *c = read_data(argv[3], &size);
 		
-		char *msg = decrypt(pub, c, size);
+		char *msg = decrypt(priv, c, size);
 		
 		printf("message: %s\n", msg);
 	} else {
@@ -69,15 +73,15 @@ void gen_keys(int p, int q) {
 	// Seed s = {22531, 72997};
 	// Seed s = {2, 71};
 	Seed s = {p, q};
-	PrivateKey priv = mk_key(s);
-	PublicKey  pub  = mk_pub(priv);
+	PublicKey  pub  = mk_pub(s);
+	PrivateKey priv = mk_key(s, pub);
 
 	FILE *fp = fopen("key", "w");
 	if (!fp) {
 		perror("could not write private key");
 		return;
 	}
-	fprintf(fp, "%lld %lld %lld\n", priv.e, priv.d, priv.n);
+	fprintf(fp, "%lld %lld\n", priv.d, priv.n);
 	fclose(fp);
 
 	fp = fopen("key.pub", "w");
@@ -85,7 +89,7 @@ void gen_keys(int p, int q) {
 		perror("could not write public key");
 		return;
 	}
-	fprintf(fp, "%lld %lld\n", pub.d, pub.n);
+	fprintf(fp, "%lld %lld\n", pub.e, pub.n);
 	fclose(fp);
 }
 
@@ -99,7 +103,7 @@ PublicKey read_public_key(char *filename) {
 		exit(EXIT_FAILURE);
 	}
 
-	fscanf(fp, "%lld %lld", &pub->d, &pub->n);
+	fscanf(fp, "%lld %lld", &pub->e, &pub->n);
 	fclose(fp);
 	return *pub;
 }
@@ -114,7 +118,7 @@ PrivateKey read_private_key(char *filename) {
 		exit(EXIT_FAILURE);
 	}
 
-	fscanf(fp, "%lld %lld %lld", &priv->e, &priv->d, &priv->n);
+	fscanf(fp, "%lld %lld", &priv->d, &priv->n);
 	fclose(fp);
 	return *priv;
 }
@@ -171,10 +175,10 @@ void print_help(char *cmd) {
 	printf("      args: p q\n");
 	printf("      example: %s genkeys 2 71\n\n", cmd);
 	printf("    encrypt\n");
-	printf("      args: privkey message\n");
-	printf("      example: %s encrypt key \"hello world!\"\n\n", cmd);
+	printf("      args: pubkey message\n");
+	printf("      example: %s encrypt key.pub \"hello world!\"\n\n", cmd);
 	printf("    decrypt\n");
-	printf("      args: pubkey file\n");
-	printf("      example: %s decrypt key.pub encrypted.bin\n", cmd);
+	printf("      args: privkey file\n");
+	printf("      example: %s decrypt key encrypted.bin\n", cmd);
 }
 

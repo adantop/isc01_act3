@@ -2,13 +2,19 @@
 #include "types.h"
 #include "mod.h"
 
+int isprime(const bigint val) {
+	for (int i = 2; i < val; i++) {
+		if (val % i == 0) return 0;
+	}
+
+	return 1;
+}
+
 void mod(const bigint val, const bigint base, bigint *quot, bigint *rem, int *err) {
 	*err = 0;
 	bigint d = val / base;
 
-	if (base == 0) {
-		*err = 1;
-	} else if (base < 0) {
+	if (base <= 0) {
 		*err = 1;
 	}
 

@@ -1,1 +1,6 @@
 build/
+.idea/
+cmake-build-debug/
+key
+key.pub
+encrypted.bin

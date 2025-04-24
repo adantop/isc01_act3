@@ -1,6 +1,8 @@
 #include "types.h"
 
-void mod(const bigint val, const bigint base, bigint *quot, bigint *rem, int *err);
+int isprime(bigint val);
+
+void mod(bigint val, bigint base, bigint *quot, bigint *rem, int *err);
 
 bigint mcd(bigint a, bigint b);
 

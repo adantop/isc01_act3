@@ -1,14 +1,14 @@
 #include "types.h"
 
-PrivateKey mk_key(Seed s);
+PublicKey mk_pub(Seed s);
 
-PublicKey mk_pub(PrivateKey p);
+PrivateKey mk_key(Seed s, PublicKey pub);
 
-int enc(PrivateKey k, int m);
+int enc(PublicKey k, int m);
 
-int dec(PublicKey k, int c);
+int dec(PrivateKey k, int c);
 
-int * encrypt(PrivateKey k, char *msg, int size);
+int * encrypt(PublicKey k, char *msg, int size);
 
-char * decrypt(PublicKey k, int *cypher, int size);
+char * decrypt(PrivateKey k, int *cypher, int size);
 

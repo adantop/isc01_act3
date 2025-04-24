@@ -16,13 +16,12 @@ typedef struct {
 } Seed;
 
 typedef struct {
-	bigint e;
 	bigint d;
 	bigint n;
 } PrivateKey;
 
 typedef struct {
-	bigint d;
+	bigint e;
 	bigint n;
 } PublicKey;
 
