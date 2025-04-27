@@ -1,39 +1,48 @@
-# RSA
+# RSA Algorithm Implementation
 
-1. Generate keys
-    1. Select 2 prime numbers (p, q)
-    2. Calculate mod n = p * q
-    3. Calc Euler function phi(n) = (p - 1) * (q - 1)
-    4. Select public factor (e):
-       1 <= e <= phi(n)
-       such that: MCD(e, phi(n)) = 1
-       meaning: e and phi(n) are co-prime
-    5. Select private factor (d)
-       such that: e * d = 1 mod(phi(n))
-2. Private key: (e, n)
-3. Public key:  (d, n)
-4. Encrypt: C = (M^e) mod (n)
-5. Decrypt: M = (C^d) mod (n)
+This project implements the **RSA encryption algorithm** in C. It includes basic modules for key generation, encryption, and decryption, following the RSA standard procedure.
 
-# Estudiar algoritmo de Euclides
+## How It Works
 
-Encontrar d
+1. **Key Generation**:
+   - Select two prime numbers `p` and `q`.
+   - Compute the modulus `n = p * q`.
+   - Calculate Euler's totient function `phi(n) = (p-1)*(q-1)`.
+   - Select a public exponent `e` such that `1 < e < phi(n)` and `gcd(e, phi(n)) = 1`.
+   - Calculate the private exponent `d` such that `e * d ≡ 1 (mod phi(n))`.
 
-Find x such that:
+2. **Keys**:
+   - **Public Key**: `(e, n)`
+   - **Private Key**: `(d, n)`
 
-C⋅x ≡ A mod(b)
+3. **Encryption**:
+   - Ciphertext `C = (M^e) mod n`
 
-## Find C^-1 and multiply the equation
+4. **Decryption**:
+   - Message `M = (C^d) mod n`
 
-x ≡ C^-1 ⋅ A mod(b)
+## Project Structure
 
-## Verify that **C** can be coprime of **b**
+- `main.c` — Handles key generation, encryption, and decryption operations.
+- `crypto.c`, `crypto.h` — RSA algorithm core functions.
+- `mod.c`, `mod.h` — Modular arithmetic helper functions (e.g., modular inverse).
+- `types.h` — Type definitions.
+- `CMakeLists.txt` — Build configuration file.
 
-mcd(C, b) = 1
+## Compilation
 
-Euler tells us that if mcd(C, b) = 1
+```bash
+mkdir build
+cd build
+cmake ..
+make
+./rsa_program
+```
 
-C^-1 = C^phi(b)-1 mod b
+> Requires a C compiler and CMake installed.
 
-Where phi(b) is Euler's totient function: the number of integers from 1 to b that are coprime with b, meaning mcd(n,b) == 1
+## Notes
 
+- Modular arithmetic relies on the **Extended Euclidean Algorithm**.
+- Prime numbers are currently hardcoded for demonstration purposes.
+- This is a learning project and not intended for production use.
